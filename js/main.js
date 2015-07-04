@@ -191,7 +191,8 @@
         playPause.click(togglePlay);
 
         players.sortable({
-          stop: function(event, ui) {
+          axis: "y",
+          "stop": function(event, ui) {
             if (playing) {
                 soundManager.pauseAll();
                 playing = false;
