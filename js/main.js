@@ -139,7 +139,7 @@
         $('.player').each(function (column) {
             var offset = 0,
                 currentSound,
-                position = positions[column] || 0;
+                position = Math.max.apply(null, positions) || 0;
             $(this).find('.player-item').each (function () {
                 var item = items[$(this).attr('id')];
                 if (offset + item.sound.duration > position) {
