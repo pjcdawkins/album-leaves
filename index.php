@@ -1,5 +1,10 @@
 <?php
 
+if ($_SERVER['REQUEST_URI'] !== '/') {
+  http_response_code(404);
+  exit;
+}
+
 $settings = ["sounds" => []];
 $sounds_dir = 'sounds';
 $sound_files = scandir($sounds_dir);
@@ -31,6 +36,7 @@ if (!empty($sound_files)) {
 
     <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <link href="css/styles.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
@@ -45,18 +51,17 @@ if (!empty($sound_files)) {
   <body>
     <h1>Album Leaves</h1>
 
-    <div class="row players">
-	    <div class="player col-sm-4 col-sm-offset-2 col-xs-6"></div>
-	    <div class="player col-sm-4 col-xs-6"></div>
-	</div>
-    <div class="controls">
-    	<button class="play-pause">
-    		<i class="fa fa-play"></i>
-    		Play
-    	</button>
-    </div>
+    <section class="container-fluid">
+	    <div class="controls"></div>
+
+	    <div class="players row">
+		    <div class="player col-sm-4 col-sm-offset-2 col-xs-6"></div>
+		    <div class="player col-sm-4 col-xs-6"></div>
+		</div>
+	</section>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/soundmanager2/script/soundmanager2-jsmin.js"></script>
     <script src="js/main.js"></script>

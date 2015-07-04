@@ -1,13 +1,39 @@
+.players {
+	display: none;
+	background-color: LightGreen;
+}
 .player {
-	background-color: #eeeeee;
-	margin-right: 5px;
+	position: relative;
+}
+.players.loaded {
+	display: block;
 }
 .player-item {
 	background-color: #ffffff;
 	border: 1px solid #cccccc;
 	margin: 10px;
-	padding: 5px 30px;
+	padding: 10px;
+	position: relative;
+	z-index: 1;
 }
 .player-item.playing {
-	border-color: #000000;
+	border-color: blue;
+}
+.player-item .timing {
+	color: #aaaaaa;
+	float: right;
+}
+
+.controls {
+	margin: 10px auto;
+	text-align: center;
+	width: 20%;
+}
+
+.position-marker {
+	background-color: white;
+	height: 1px;
+	position: absolute;
+	top: 0;
+	width: 100%;
 }
