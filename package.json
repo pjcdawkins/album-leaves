@@ -1,0 +1,13 @@
+{
+  "name": "album-leaves",
+  "version": "0.1.0",
+  "description": "Album Leaves player",
+  "main": "index.php",
+  "dependencies": {
+    "bootstrap": "^3.3.5",
+    "soundmanager2": "^2.97.20150601-a"
+  },
+  "devDependencies": {},
+  "author": "Patrick Dawkins",
+  "license": "MIT"
+}
