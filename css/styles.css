@@ -10,11 +10,14 @@
 }
 .player-item {
 	background-color: #ffffff;
-	border: 1px solid #cccccc;
+	border: 1px solid red;
 	margin: 10px;
 	padding: 10px;
 	position: relative;
 	z-index: 1;
+}
+.player-item.loaded {
+	border: 1px solid #cccccc;
 }
 .player-item.playing {
 	border-color: blue;

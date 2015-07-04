@@ -1,0 +1,15 @@
+name: php
+
+toolstack: "php:symfony"
+
+web:
+    document_root: "/"
+    passthru: "/index.php"
+
+disk: 2048
+
+mounts:
+    "/public/sounds": "shared:files/sounds"
+
+hooks:
+    build: "cd public; npm install"
