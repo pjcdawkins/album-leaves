@@ -55,6 +55,8 @@
             },
             onplay: function () {
                 div.addClass('playing');
+                var item = items[this.id];
+                positions[item.column] = item.offset + this.position;
             },
             onresume: function () {
                 div.addClass('playing');
@@ -70,7 +72,11 @@
                     if (!next.length) {
                         next = div.parent().find('.player-item').eq(0);
                     }
-                    next.length && items[next.attr('id')].sound.play();
+                    if (next.length) {
+                        var nextSound = items[next.attr('id')].sound;
+                        nextSound.setPosition(0);
+                        nextSound.play();
+                    }
                 }
             },
             whileplaying: function() {
