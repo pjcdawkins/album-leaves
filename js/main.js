@@ -70,7 +70,7 @@
                 var div = state.items[this.id].div;
                 div.removeClass('playing');
                 // If we are still playing, find the next item and play it.
-                if (playing) {
+                if (state.playing) {
                     var next = div.next('.player-item');
                     if (next.length) {
                         var nextSound = state.items[next.attr('id')].sound;
