@@ -176,10 +176,16 @@
     }
 
     function fastForward(ms) {
+        ms = ms || 1000;
         if (playing) {
             for (var i in positions) {
                 if (positions.hasOwnProperty(i)) {
-                    positions[i] += ms || 1000;
+                    if (positions[i] + ms <= 0) {
+                        positions[1] = 0;
+                    }
+                    else {
+                        positions[i] += ms;
+                    }
                 }
             }
             playFromCurrentPosition();
