@@ -57,9 +57,19 @@ if (!empty($sound_files)) {
         <button class="fast-forward" title="Fast forward"><i class="fa fa-fast-forward"></i></button>
     </div>
 
-    <div class="players row">
-        <div class="player col-sm-4 col-sm-offset-2 col-xs-6"></div>
-        <div class="player col-sm-4 col-xs-6"></div>
+    <div class="players row col-sm-8 col-sm-offset-2">
+        <div class="player col-xs-6">
+            <h2>Quartet</h2>
+        </div>
+        <div class="player col-xs-6">
+            <h2>Trumpet</h2>
+        </div>
+    </div>
+</section>
+
+<section role="footer" id="footer">
+    <div class="col-md-10 col-md-offset-1">
+        <p>Under construction</p>
     </div>
 </section>
 

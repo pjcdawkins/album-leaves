@@ -171,10 +171,10 @@
     function fastForward(interval) {
         interval = interval || 1000;
         if (state.playing) {
+            soundManager.muteAll();
             if (typeof ffMuteTimeout !== "undefined") {
                 clearTimeout(ffMuteTimeout);
             }
-            soundManager.muteAll();
             for (var i in state.positions) {
                 if (state.positions.hasOwnProperty(i)) {
                     if (state.positions[i] + interval <= 0) {
@@ -186,7 +186,7 @@
                 }
             }
             playFromCurrentPosition();
-            ffMuteTimeout = setTimeout(soundManager.unmuteAll, 300);
+            ffMuteTimeout = setTimeout(soundManager.unmuteAll, 500);
         }
     }
 
@@ -211,8 +211,9 @@
             column = players.eq(settings.sounds[i].column);
             column.append(
                 $("<div class='player-item'>")
-                    .text(settings.sounds[i].name)
+                    .html('<span class="title">' + settings.sounds[i].name + '</span>')
                     .prepend("<div class='timing'><span class='position'>0:00</span> / <span class='duration'>0:00</span></span>")
+                    .prepend("<div class='handle'><i class='fa fa-sort'></i></div>")
                     .attr('id', settings.sounds[i].id)
             );
             createItem(
@@ -232,10 +233,12 @@
 
         players.sortable({
             axis: "y",
+            handle: ".handle",
+            items: '.player-item',
             placeholder: "placeholder",
             forcePlaceholderSize: true,
             "stop": function () {
-                if (playing) {
+                if (state.playing) {
                     playFromCurrentPosition();
                 }
             }

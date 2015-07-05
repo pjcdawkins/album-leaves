@@ -3,16 +3,22 @@ h1 {
 }
 
 .players {
-    background-color: white;
+    margin-bottom: 15px;
 }
 
 .players.loading {
-    background-color: #eeeeee;
+    background-color: #dddddd;
 }
 
 .player {
-    display: inline-block;
     position: relative;
+}
+
+.player h2 {
+    font-size: 1.1em;
+    margin: 10px 0;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 .player-item {
@@ -30,14 +36,11 @@ h1 {
     padding: 10px;
 }
 
-.player-item:before {
-    font-family: FontAwesome;
-    content: "\f0dc";
-    display: block;
-    speak: none;
+.player-item .handle {
+    font-size: 20px;
     float: right;
-    margin-left: 5px;
-    color: #777777;
+    margin-left: 10px;
+    color: #222222;
     cursor: move;
 }
 
@@ -55,7 +58,7 @@ h1 {
 }
 
 .controls {
-    margin: 20px auto;
+    margin: 10px auto;
     text-align: center;
 }
 
@@ -89,4 +92,8 @@ h1 {
 }
 .playing .position-marker {
     display: block;
+}
+
+#footer {
+    color: #aaaaaa;
 }
