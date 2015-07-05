@@ -197,7 +197,7 @@
             column.append(
                 $("<div class='player-item'>")
                     .text(settings.sounds[i].name)
-                    .append("<div class='timing'><span class='position'>0:00</span> / <span class='duration'>0:00</span></span>")
+                    .prepend("<div class='timing'><span class='position'>0:00</span> / <span class='duration'>0:00</span></span>")
                     .attr('id', settings.sounds[i].id)
             );
             createItem(
@@ -227,6 +227,8 @@
 
         players.sortable({
             axis: "y",
+            placeholder: "placeholder",
+            forcePlaceholderSize: true,
             "stop": function () {
                 if (playing) {
                     playFromCurrentPosition();

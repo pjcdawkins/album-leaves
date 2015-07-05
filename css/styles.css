@@ -23,9 +23,26 @@ h1 {
     position: relative;
 }
 
+.placeholder {
+    background-color: #ffffff;
+    border: 1px dashed #cccccc;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.player-item:before {
+    font-family: FontAwesome;
+    content: "\f0dc";
+    display: block;
+    speak: none;
+    float: right;
+    margin-left: 5px;
+    color: #777777;
+    cursor: move;
+}
+
 .player-item.loading {
     border-color: red;
-    display: none;
 }
 
 .player-item.playing {
