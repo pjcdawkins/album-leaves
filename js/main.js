@@ -175,9 +175,14 @@
         $('.players').removeClass('loading');
     }
 
+    var ffMuteTimeout;
     function fastForward(ms) {
         ms = ms || 1000;
         if (playing) {
+            if (typeof ffMuteTimeout !== "undefined") {
+                clearTimeout(ffMuteTimeout);
+            }
+            soundManager.muteAll();
             for (var i in positions) {
                 if (positions.hasOwnProperty(i)) {
                     if (positions[i] + ms <= 0) {
@@ -189,6 +194,7 @@
                 }
             }
             playFromCurrentPosition();
+            ffMuteTimeout = setTimeout(soundManager.unmuteAll, 300);
         }
     }
 
@@ -226,6 +232,7 @@
         $('.rewind').click(function () {
             fastForward(-5000);
         });
+        $('.play-pause').click(togglePlay);
 
         players.sortable({
             axis: "y",
@@ -245,6 +252,7 @@
 
     $(document).ready(function () {
         soundManager.onready(onReady);
+
         $(document).keydown(function (e) {
             if (e.which === 32) {
                 togglePlay();
