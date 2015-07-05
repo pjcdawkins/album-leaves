@@ -212,7 +212,7 @@
             column.append(
                 $("<div class='player-item'>")
                     .html('<span class="title">' + settings.sounds[i].name + '</span>')
-                    .prepend("<div class='timing'><span class='position'></span><span class='duration'>0:00</span></span>")
+                    .prepend("<div class='timing'><span class='position'>0:00 / </span><span class='duration'>0:00</span></span>")
                     .prepend("<div class='handle'><i class='fa fa-sort'></i></div>")
                     .attr('id', settings.sounds[i].id)
             );
