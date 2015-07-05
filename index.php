@@ -15,7 +15,7 @@ if (!empty($sound_files)) {
         }
         $id = 's' . md5($sound_file);
         $filename = preg_replace('/^[0-9]+ ?\- ?/', '', pathinfo($sound_file, PATHINFO_FILENAME));
-        $url = $sounds_dir . '/' . rawurlencode($sound_file);
+        $url = '/' . $sounds_dir . '/' . rawurlencode($sound_file);
         $settings["sounds"][] = [
             'id' => $id,
             'name' => $filename,
@@ -36,7 +36,7 @@ if (!empty($sound_files)) {
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -51,7 +51,11 @@ if (!empty($sound_files)) {
 <h1>Album Leaves</h1>
 
 <section class="container-fluid">
-    <div class="controls"></div>
+    <div class="controls">
+        <button class="play-pause"><i class="fa fa-play"></i> Play</button>
+        <button class="rewind" title="Rewind"><i class="fa fa-fast-backward"></i></button>
+        <button class="fast-forward" title="Fast forward"><i class="fa fa-fast-forward"></i></button>
+    </div>
 
     <div class="players row">
         <div class="player col-sm-4 col-sm-offset-2 col-xs-6"></div>
@@ -61,7 +65,7 @@ if (!empty($sound_files)) {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-<script src="node_modules/soundmanager2/script/soundmanager2-jsmin.js"></script>
-<script src="js/main.js"></script>
+<script src="/node_modules/soundmanager2/script/soundmanager2-jsmin.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>
