@@ -67,11 +67,11 @@ if (!empty($sound_files)) {
     </div>
 </section>
 
-<section role="footer" id="footer">
+<footer>
     <div class="col-md-10 col-md-offset-1">
         <p>Under construction</p>
     </div>
-</section>
+</footer>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
