@@ -4,7 +4,6 @@
   "description": "Album Leaves player",
   "main": "index.php",
   "dependencies": {
-    "bootstrap": "^3.3.5",
     "soundmanager2": "^2.97.20150601-a"
   },
   "devDependencies": {},
