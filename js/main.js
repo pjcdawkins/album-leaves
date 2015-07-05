@@ -100,23 +100,14 @@
     }
 
     function setHeights() {
-        var avgDuration = 0,
-            defaultHeight = 200,
+        var heightMultiplier = 1, // pixels per second
             minHeight = 10,
-            height,
-            count = 0;
+            height;
         for (var i in items) {
-            if (items.hasOwnProperty(i)) {
-                ++count;
-                totalDuration += items[i].sound.duration;
-            }
-        }
-        avgDuration = count ? totalDuration / count : 0;
-        for (i in items) {
             if (!items.hasOwnProperty(i)) {
                 continue;
             }
-            height = defaultHeight * (avgDuration ? items[i].sound.duration / avgDuration : 1);
+            height = heightMultiplier * items[i].sound.duration / 1000;
             if (height < minHeight) {
                 height = minHeight;
             }
