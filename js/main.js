@@ -66,9 +66,6 @@
                 // If we are still playing, find the next item and play it.
                 if (playing) {
                     var next = div.next('.player-item');
-                    if (!next.length) {
-                        next = div.parent().find('.player-item').eq(0);
-                    }
                     if (next.length) {
                         var nextSound = items[next.attr('id')].sound;
                         nextSound.setPosition(0);
