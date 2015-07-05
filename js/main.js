@@ -16,7 +16,9 @@
                 return;
             }
         }
-        runAllLoaded || onAllLoaded();
+        if (!runAllLoaded) {
+            onAllLoaded();
+        }
         return true;
     }
 
@@ -101,14 +103,13 @@
             height,
             count = 0;
         for (var i in items) {
-            if (!items.hasOwnProperty(i)) {
-                continue;
+            if (items.hasOwnProperty(i)) {
+                ++count;
+                totalDuration += items[i].sound.duration;
             }
-            ++count;
-            totalDuration += items[i].sound.duration;
         }
         avgDuration = count ? totalDuration / count : 0;
-        for (var i in items) {
+        for (i in items) {
             if (!items.hasOwnProperty(i)) {
                 continue;
             }
@@ -166,9 +167,10 @@
     }
 
     function onReady() {
-        var players = $('.players').find('.player');
+        var players = $('.players').find('.player'),
+            column;
         for (var i in settings.sounds) {
-            var column = players.eq(settings.sounds[i].column);
+            column = players.eq(settings.sounds[i].column);
             column.append(
                 $("<div class='player-item'>")
                     .text(settings.sounds[i].name)
