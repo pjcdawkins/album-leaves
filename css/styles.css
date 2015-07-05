@@ -57,6 +57,15 @@ h1 {
     float: right;
 }
 
+.player-item .position {
+    color: transparent;
+}
+
+.player-item.playing .position {
+    color: inherit;
+    display: inline;
+}
+
 .controls {
     margin: 10px auto;
     text-align: center;
