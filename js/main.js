@@ -38,7 +38,7 @@
      */
     function createItem(id, url, div, column, soundManager) {
         var data = {
-            offset: 0,
+            durationOffset: 0,
             div: div,
             loaded: false,
             column: column
@@ -49,21 +49,24 @@
             autoLoad: true,
             onload: function () {
                 if (this.duration) {
-                    div.find('.duration').text(formatTime(this.duration));
+                    items[this.id].div
+                        .find('.duration')
+                        .text(formatTime(this.duration));
                 }
                 items[this.id].loaded = true;
                 checkAllLoaded();
             },
             onplay: function () {
-                div.addClass('playing');
+                items[this.id].div.addClass('playing');
             },
             onresume: function () {
-                div.addClass('playing');
+                items[this.id].div.addClass('playing');
             },
             onpause: function () {
-                div.removeClass('playing');
+                items[this.id].div.removeClass('playing');
             },
             onfinish: function () {
+                var div = items[this.id].div;
                 div.removeClass('playing');
                 // If we are still playing, find the next item and play it.
                 if (playing) {
@@ -77,7 +80,7 @@
             },
             whileplaying: function () {
                 var item = items[this.id];
-                positions[item.column] = item.offset + this.position;
+                positions[item.column] = item.durationOffset + this.position;
                 item.div.find('.position').text(formatTime(this.position));
                 setPlayPosition(item);
             }
@@ -135,7 +138,7 @@
 
         // Loop through each sound finding the playing position.
         $('.player').each(function () {
-            var offset = 0,
+            var durationOffset = 0,
                 currentSound;
 
             // Use the maximum of the known playing positions.
@@ -143,15 +146,15 @@
 
             $(this).find('.player-item').each(function () {
                 var item = items[$(this).attr('id')];
-                if (offset + item.sound.duration > position) {
+                if (durationOffset + item.sound.duration > position) {
                     currentSound = item;
-                    item.offset = offset;
-                    item.sound.setPosition(position - offset);
+                    item.durationOffset = durationOffset;
+                    item.sound.setPosition(position - durationOffset);
                     item.sound.play();
                     playing = true;
                     return false;
                 }
-                offset += item.sound.duration;
+                durationOffset += item.sound.duration;
             });
         });
 
@@ -160,10 +163,27 @@
         }
     }
 
+    function playFromCurrentPosition() {
+        soundManager.pauseAll();
+        playing = false;
+        togglePlay();
+    }
+
     function onAllLoaded() {
         setHeights();
         $('.player-item').removeClass('loading');
         $('.players').removeClass('loading');
+    }
+
+    function fastForward(ms) {
+        if (playing) {
+            for (var i in positions) {
+                if (positions.hasOwnProperty(i)) {
+                    positions[i] += ms || 1000;
+                }
+            }
+            playFromCurrentPosition();
+        }
     }
 
     function onReady() {
@@ -189,16 +209,23 @@
         $('.player-item').append('<div class="position-marker"><i class="fa fa-long-arrow-right"></i></div>');
 
         var controls = $('.controls');
-        controls.html('<button class="play-pause"><i class="fa fa-play"></i> Play</button>');
-        $('.play-pause').click(togglePlay);
+        controls.html(
+            '<button class="play-pause"><i class="fa fa-play"></i> Play</button>'
+            + ' <button class="rewind" title="Rewind"><i class="fa fa-fast-backward"></i></button>'
+            + ' <button class="fast-forward" title="Fast forward"><i class="fa fa-fast-forward"></i></button>'
+        );
+        $('.fast-forward').click(function () {
+            fastForward(5000);
+        });
+        $('.rewind').click(function () {
+            fastForward(-5000);
+        });
 
         players.sortable({
             axis: "y",
             "stop": function () {
                 if (playing) {
-                    soundManager.pauseAll();
-                    playing = false;
-                    togglePlay();
+                    playFromCurrentPosition();
                 }
             }
         });
@@ -213,9 +240,15 @@
     $(document).ready(function () {
         soundManager.onready(onReady);
         $(document).keydown(function (e) {
-            if (e.which === 32 && !$(e.target).is(':input')) {
+            if (e.which === 32) {
                 togglePlay();
                 return false;
+            }
+            else if (e.which === 39 || e.which === 37) {
+                if (playing) {
+                    fastForward(e.which === 39 ? 1000 : -1000);
+                    return false;
+                }
             }
         });
     });
