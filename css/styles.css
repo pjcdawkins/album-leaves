@@ -1,42 +1,74 @@
+h1 {
+    text-align: center;
+}
+
 .players {
-	display: none;
-	background-color: LightGreen;
+    background-color: white;
 }
+
+.players.loading {
+    background-color: #eeeeee;
+}
+
 .player {
-	position: relative;
+    display: inline-block;
+    position: relative;
 }
-.players.loaded {
-	display: block;
-}
+
 .player-item {
-	background-color: #ffffff;
-	border: 1px solid red;
-	margin: 10px;
-	padding: 10px;
-	position: relative;
-	z-index: 1;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    margin-bottom: 15px;
+    padding: 10px;
+    position: relative;
 }
-.player-item.loaded {
-	border: 1px solid #cccccc;
+
+.player-item.loading {
+    border-color: red;
+    display: none;
 }
+
 .player-item.playing {
-	border-color: blue;
+    border-color: blue;
 }
+
 .player-item .timing {
-	color: #aaaaaa;
-	float: right;
+    color: #aaaaaa;
+    float: right;
 }
 
 .controls {
-	margin: 10px auto;
-	text-align: center;
-	width: 20%;
+    margin: 20px auto;
+    text-align: center;
+    width: 20%;
+}
+
+.controls button {
+    background-color: #ffffff;
+    box-shadow: none;
+    border: 1px solid #cccccc;
+    padding: 5px 10px;
+    position: relative;
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.controls button:focus {
+    outline: none;
+}
+
+.controls button i {
+    margin-right: 10px;
 }
 
 .position-marker {
-	background-color: white;
-	height: 1px;
-	position: absolute;
-	top: 0;
-	width: 100%;
+    color: #aaaaaa;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: -1em;
+    vertical-align: middle;
+}
+.playing .position-marker {
+    display: block;
 }

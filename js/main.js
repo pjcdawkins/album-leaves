@@ -12,7 +12,7 @@
             return;
         }
         for (var i in items) {
-            if (!items[i].loaded) {
+            if (items.hasOwnProperty(i) && !items[i].loaded) {
                 return;
             }
         }
@@ -22,7 +22,7 @@
 
     function pad(num, size) {
         var s = "000000000" + num;
-        return s.substr(s.length-size);
+        return s.substr(s.length - size);
     }
 
     function formatTime(ms) {
@@ -47,7 +47,6 @@
             autoLoad: true,
             onload: function () {
                 if (this.duration) {
-                    div.addClass('loaded');
                     div.find('.duration').text(formatTime(this.duration));
                 }
                 items[this.id].loaded = true;
@@ -55,8 +54,6 @@
             },
             onplay: function () {
                 div.addClass('playing');
-                var item = items[this.id];
-                positions[item.column] = item.offset + this.position;
             },
             onresume: function () {
                 div.addClass('playing');
@@ -79,22 +76,25 @@
                     }
                 }
             },
-            whileplaying: function() {
+            whileplaying: function () {
                 var item = items[this.id];
                 positions[item.column] = item.offset + this.position;
-                item.div.find('.position').text(formatTime(this.position))
-                item.div.siblings('.position-marker').css('top', calculatePlayheadOffset(item));
+                item.div.find('.position').text(formatTime(this.position));
+                setPlayPosition(item);
             }
         });
         items[id] = data;
     }
 
-    function calculatePlayheadOffset(item) {
-        var itemTop = item.div.offset().top + 1,
-            itemHeight = item.div.height(),
+    function calculatePlayOffset(item) {
+        var itemHeight = item.div.height(),
             positionFraction = item.sound.position / item.sound.duration;
 
-        return itemHeight * positionFraction + itemTop - item.div.parent().offset().top;
+        return itemHeight * positionFraction;
+    }
+
+    function setPlayPosition(item) {
+        item.div.find('.position-marker').css('top', calculatePlayOffset(item));
     }
 
     function setHeights() {
@@ -126,7 +126,7 @@
     }
 
     function togglePlay() {
-        var button = $(this);
+        var button = $('.play-pause');
 
         if (playing) {
             soundManager.pauseAll();
@@ -136,11 +136,14 @@
         }
 
         // Loop through each sound finding the playing position.
-        $('.player').each(function (column) {
+        $('.player').each(function () {
             var offset = 0,
-                currentSound,
-                position = Math.max.apply(null, positions) || 0;
-            $(this).find('.player-item').each (function () {
+                currentSound;
+
+            // Use the maximum of the known playing positions.
+            var position = Math.max.apply(null, positions) || 0;
+
+            $(this).find('.player-item').each(function () {
                 var item = items[$(this).attr('id')];
                 if (offset + item.sound.duration > position) {
                     currentSound = item;
@@ -161,7 +164,8 @@
 
     function onAllLoaded() {
         setHeights();
-        $('.players').addClass('loaded');
+        $('.player-item').removeClass('loading');
+        $('.players').removeClass('loading');
     }
 
     function onReady() {
@@ -171,7 +175,7 @@
             column.append(
                 $("<div class='player-item'>")
                     .text(settings.sounds[i].name)
-                    .append("<div class='timing'><span class='position'>0:00</span> / <span class='duration'></span></span>")
+                    .append("<div class='timing'><span class='position'>0:00</span> / <span class='duration'>0:00</span></span>")
                     .attr('id', settings.sounds[i].id)
             );
             createItem(
@@ -183,22 +187,21 @@
             );
         }
 
-        players.append('<div class="position-marker"></div>');
+        $('.player-item').append('<div class="position-marker"><i class="fa fa-long-arrow-right"></i></div>');
 
         var controls = $('.controls');
         controls.html('<button class="play-pause"><i class="fa fa-play"></i> Play</button>');
-        var playPause = controls.find('.play-pause');
-        playPause.click(togglePlay);
+        $('.play-pause').click(togglePlay);
 
         players.sortable({
-          axis: "y",
-          "stop": function(event, ui) {
-            if (playing) {
-                soundManager.pauseAll();
-                playing = false;
-                togglePlay();
+            axis: "y",
+            "stop": function () {
+                if (playing) {
+                    soundManager.pauseAll();
+                    playing = false;
+                    togglePlay();
+                }
             }
-          }
         });
     }
 
@@ -210,6 +213,12 @@
 
     $(document).ready(function () {
         soundManager.onready(onReady);
+        $(document).keydown(function (e) {
+            if (e.which === 32 && !$(e.target).is(':input')) {
+                togglePlay();
+                return false;
+            }
+        });
     });
 
 })(jQuery, soundManager, settings);
