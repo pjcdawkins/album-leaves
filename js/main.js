@@ -172,7 +172,7 @@
     function onAllLoaded() {
         setHeights();
         $('.player-item').removeClass('loading');
-        $('.players').removeClass('loading');
+        $('#loading').remove();
     }
 
     function checkAllFinished() {
@@ -249,7 +249,7 @@
         for (var i in settings.sounds) {
             column = players.eq(settings.sounds[i].column);
             column.append(
-                $("<div class='player-item'>")
+                $("<div class='player-item loading'>")
                     .html('<span class="title">' + settings.sounds[i].name + '</span>')
                     .prepend("<div class='timing'><span class='position'>0:00 / </span><span class='duration'>0:00</span></span>")
                     .prepend("<div class='handle'><i class='fa fa-sort'></i></div>")
@@ -291,6 +291,8 @@
     });
 
     $(document).ready(function () {
+        $('body').append('<div class="dialog" id="loading">Loading...</div>');
+
         soundManager.onready(onReady);
 
         $(document).keydown(function (e) {

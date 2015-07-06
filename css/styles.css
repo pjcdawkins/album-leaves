@@ -45,7 +45,7 @@ h1 {
 }
 
 .player-item.loading {
-    border-color: red;
+    opacity: 0.5;
 }
 
 .player-item.playing {
@@ -105,4 +105,15 @@ h1 {
 
 #footer {
     color: #aaaaaa;
+}
+
+.dialog {
+    font-size: 1.5em;
+    padding: 15px;
+    width: 20%;
+    border: 2px outset #aaaaaa;
+    background-color: white;
+    position: fixed;
+    top: 40%;
+    margin: 0 40%;
 }
