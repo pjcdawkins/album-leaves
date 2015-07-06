@@ -77,6 +77,9 @@
                         nextSound.setPosition(0);
                         nextSound.play();
                     }
+                    else {
+                        checkAllFinished();
+                    }
                 }
             },
             whileplaying: function () {
@@ -129,6 +132,7 @@
         }
 
         // Loop through each sound finding the playing position.
+        var foundSound = false;
         $('.player').each(function () {
             var durationOffset = 0,
                 currentSound;
@@ -144,13 +148,17 @@
                     item.sound.setPosition(position - durationOffset);
                     item.sound.play();
                     state.playing = true;
+                    foundSound = true;
                     return false;
                 }
                 durationOffset += item.sound.duration;
             });
         });
 
-        if (state.playing) {
+        if (!foundSound) {
+            onAllFinished();
+        }
+        else if (state.playing) {
             button.html('<i class="fa fa-pause"></i> Pause');
         }
     }
@@ -165,6 +173,37 @@
         setHeights();
         $('.player-item').removeClass('loading');
         $('.players').removeClass('loading');
+    }
+
+    function checkAllFinished() {
+        var allFinished = true;
+        $('.player').each(function () {
+            var durationOffset = 0;
+            var position = Math.max.apply(null, state.positions) || 0;
+
+            $(this).find('.player-item').each(function () {
+                var item = state.items[$(this).attr('id')];
+                if (durationOffset + item.sound.duration > position) {
+                    allFinished = false;
+                }
+                durationOffset += item.sound.duration;
+            });
+        });
+        if (allFinished) {
+            onAllFinished();
+        }
+    }
+
+    function onAllFinished() {
+        state.playing = false;
+        soundManager.stopAll();
+        $('.play-pause').html('<i class="fa fa-play"></i> Play');
+        $('.position-marker').css('top', 0);
+        for (var i in state.positions) {
+            if (state.positions.hasOwnProperty(i)) {
+                state.positions[i] = 0;
+            }
+        }
     }
 
     var ffMuteTimeout;
