@@ -5,7 +5,8 @@
         items: {},
         runAllLoaded: false,
         playing: false,
-        positions: []
+        positions: [],
+        playPauseButton: $()
     };
 
     function checkAllLoaded() {
@@ -35,15 +36,27 @@
     }
 
     /**
-     * @see http://www.schillmania.com/projects/soundmanager2/doc/
+     * Create an 'item': a sound and its visual representation.
+     *
+     * @param id
+     *   The unique ID of the item. This is also the ID of the HTML element and
+     *   of the Sound Manager 2 sound object.
+     * @param url
+     *   The URL of the sound file.
+     * @param div
+     *   The HTML div element representing the sound.
+     * @param column
+     *   An integer representing the column where the item is placed (0 being
+     *   the left-most column).
      */
-    function createItem(id, url, div, column, soundManager) {
+    function createItem(id, url, div, column) {
         var data = {
             durationOffset: 0,
             div: div,
             loaded: false,
             column: column
         };
+        // See http://www.schillmania.com/projects/soundmanager2/doc/
         data.sound = soundManager.createSound({
             id: id,
             url: url,
@@ -92,17 +105,20 @@
         state.items[id] = data;
     }
 
-    function calculatePlayOffset(item) {
-        var itemHeight = item.div.height(),
-            positionFraction = item.sound.position / item.sound.duration;
-
-        return itemHeight * positionFraction;
-    }
-
+    /**
+     * Set the position marker of an item to its current playing position.
+     */
     function setPlayPosition(item) {
-        item.div.find('.position-marker').css('top', calculatePlayOffset(item));
+        var itemHeight = item.div.height(),
+            positionFraction = item.sound.position / item.sound.duration,
+            playOffset = itemHeight * positionFraction;
+
+        item.div.find('.position-marker').css('top', playOffset);
     }
 
+    /**
+     * Set the heights of all items in proportion with their durations.
+     */
     function setHeights() {
         var heightMultiplier = 1, // pixels per second
             minHeight = 10,
@@ -121,24 +137,41 @@
         }
     }
 
+    /**
+     * Play or pause.
+     */
     function togglePlay() {
-        var button = $('.play-pause');
+        state.playing ? pause() : play();
+    }
 
+    /**
+     * Pause all sounds.
+     */
+    function pause() {
+        soundManager.pauseAll();
+        state.playing = false;
+        state.playPauseButton.html('<i class="fa fa-play"></i> Play');
+    }
+
+    /**
+     * Play all sounds in all columns matching state.positions.
+     *
+     * If already playing, calling this function will ensure sounds are played
+     * according to their current positions (e.g. if sounds have been moved).
+     */
+    function play() {
+        // Use the maximum of the known playing positions.
+        var position = Math.max.apply(null, state.positions) || 0;
+
+        // Pause other tracks, if necessary, before playing new tracks.
         if (state.playing) {
             soundManager.pauseAll();
-            state.playing = false;
-            button.html('<i class="fa fa-play"></i> Play');
-            return;
         }
 
-        // Loop through each sound finding the playing position.
         var foundSound = false;
         $('.player').each(function () {
             var durationOffset = 0,
                 currentSound;
-
-            // Use the maximum of the known playing positions.
-            var position = Math.max.apply(null, state.positions) || 0;
 
             $(this).find('.player-item').each(function () {
                 var item = state.items[$(this).attr('id')];
@@ -156,17 +189,11 @@
         });
 
         if (!foundSound) {
-            onAllFinished();
+            stop();
         }
         else if (state.playing) {
-            button.html('<i class="fa fa-pause"></i> Pause');
+            state.playPauseButton.html('<i class="fa fa-pause"></i> Pause');
         }
-    }
-
-    function playFromCurrentPosition() {
-        soundManager.pauseAll();
-        state.playing = false;
-        togglePlay();
     }
 
     function onAllLoaded() {
@@ -190,14 +217,17 @@
             });
         });
         if (allFinished) {
-            onAllFinished();
+            stop();
         }
     }
 
-    function onAllFinished() {
-        state.playing = false;
+    /**
+     * Stop all sounds, and reset the positions of all columns to 0.
+     */
+    function stop() {
         soundManager.stopAll();
-        $('.play-pause').html('<i class="fa fa-play"></i> Play');
+        state.playing = false;
+        state.playPauseButton.html('<i class="fa fa-play"></i> Play');
         $('.position-marker').css('top', 0);
         for (var i in state.positions) {
             if (state.positions.hasOwnProperty(i)) {
@@ -207,6 +237,13 @@
     }
 
     var ffMuteTimeout;
+    /**
+     * Fast forward or rewind all columns.
+     *
+     * @param interval
+     *   The time interval by which to move forward, as an integer in
+     *   milliseconds (this can be negative). Defaults to 1000.
+     */
     function fastForward(interval) {
         interval = interval || 1000;
         if (state.playing) {
@@ -224,12 +261,20 @@
                     }
                 }
             }
-            playFromCurrentPosition();
+            play();
             ffMuteTimeout = setTimeout(soundManager.unmuteAll, 500);
         }
     }
 
     var ffTimeout;
+    /**
+     * Turn a jQuery element representing a button into a fast-forward button.
+     *
+     * Fast-forward will continue while the mouse is held down.
+     *
+     * @param $button
+     * @param interval
+     */
     function setupFfListener($button, interval) {
         $button.mousedown(function() {
             ffTimeout = setInterval(function () {
@@ -243,10 +288,16 @@
         });
     }
 
+    /**
+     * React after the page is fully loaded.
+     */
     function onReady() {
         var players = $('.players').find('.player'),
             column;
         for (var i in settings.sounds) {
+            if (!settings.sounds.hasOwnProperty(i)) {
+                continue;
+            }
             column = players.eq(settings.sounds[i].column);
             column.append(
                 $("<div class='player-item loading'>")
@@ -259,8 +310,7 @@
                 settings.sounds[i].id,
                 settings.sounds[i].url,
                 column.find('#' + settings.sounds[i].id),
-                settings.sounds[i].column,
-                soundManager
+                settings.sounds[i].column
             );
         }
 
@@ -268,7 +318,8 @@
 
         setupFfListener($('.fast-forward'), 5000);
         setupFfListener($('.rewind'), -5000);
-        $('.play-pause').click(togglePlay);
+        state.playPauseButton = $('.play-pause');
+        state.playPauseButton.click(togglePlay);
 
         players.sortable({
             axis: "y",
@@ -278,28 +329,35 @@
             forcePlaceholderSize: true,
             "stop": function () {
                 if (state.playing) {
-                    playFromCurrentPosition();
+                    play();
                 }
             }
         });
     }
 
+    // Set up Sound Manager 2.
     soundManager.setup({
         url: "/node_modules/soundmanager2/swf",
         preferFlash: false,
         debugMode: false
     });
 
+    /**
+     * React when the page has been fully loaded.
+     */
     $(document).ready(function () {
         $('body').append('<div class="dialog" id="loading">Loading...</div>');
 
         soundManager.onready(onReady);
 
+        // Set up keyboard shortcuts.
         $(document).keydown(function (e) {
+            // The space bar will pause or resume playing.
             if (e.which === 32) {
                 togglePlay();
                 return false;
             }
+            // The right and left arrow keys will fast-forward and rewind.
             else if (e.which === 39 || e.which === 37) {
                 fastForward(e.which === 39 ? 1000 : -1000);
                 return false;
