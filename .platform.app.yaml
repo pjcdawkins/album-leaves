@@ -1,6 +1,6 @@
 name: php
 
-toolstack: "php:symfony"
+type: "php:5.6"
 
 web:
     document_root: "/"
